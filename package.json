@@ -17,9 +17,7 @@
   },
   "homepage": "https://github.com/cmendesce/travis-yslow#readme",
   "dependencies": {
-    "phantomjs": "1.9"
-  }, 
-  "scripts": {
-   "test": "./node_modules/phantomjs/bin/phantomjs yslow.js -i grade --format junit fa7.edu.br > $CIRCLE_TEST_REPORTS/junit/junit.xml"
+    "phantomjs": "1.9",
+    "sitespeed.io": "^3.11.7"
   }
 }
