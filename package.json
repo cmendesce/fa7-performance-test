@@ -20,6 +20,6 @@
     "phantomjs": "1.9"
   },
   "scripts": {
-    "test": "./node_modules/phantomjs/bin/phantomjs yslow.js --info grade --format tap --threshold '{\"yexpires\": 60}' yslow.org"
+    "test": "./node_modules/phantomjs/bin/phantomjs yslow.js -i grade --format junit --threshold '{\"yexpires\": 60}' fa7.edu.br > $CIRCLE_TEST_REPORTS/junit/junit.xml"
   }
 }
