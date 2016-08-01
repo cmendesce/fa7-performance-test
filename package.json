@@ -1,0 +1,19 @@
+{
+  "name": "fa7-site-yslow",
+  "version": "1.0.0",
+  "description": "",
+  "main": "yslow.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cmendesce/travis-yslow.git"
+  },
+  "author": "Carlos Mendes",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/cmendesce/travis-yslow/issues"
+  },
+  "homepage": "https://github.com/cmendesce/travis-yslow#readme"
+}
