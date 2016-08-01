@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/cmendesce/travis-yslow#readme",
   "dependencies": {
-    "phantomjs": "2.0"
+    "phantomjs": "2.1.1"
   },
   "scripts": {
     "test": "./node_modules/phantomjs/bin/phantomjs yslow.js -i grade --format junit --threshold '{\"yexpires\": 60}' fa7.edu.br > $CIRCLE_TEST_REPORTS/junit/junit.xml"
