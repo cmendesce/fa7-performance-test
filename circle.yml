@@ -4,6 +4,7 @@ test:
     - export USER_AGENT="Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3"
     - export VIEW_PORT="[375x667]"
   override:
-    - ./node_modules/phantomjs/bin/phantomjs yslow.js -u $USER_AGENT -vp  -i grade --format junit fa7.edu.br > $CIRCLE_TEST_REPORTS/junit/junit-home.xml
-    - ./node_modules/phantomjs/bin/phantomjs yslow.js -u $USER_AGENT -vp -i grade --format junit fa7.edu.br/graduacao > $CIRCLE_TEST_REPORTS/junit/junit-graduacao.xml
-    - ./node_modules/phantomjs/bin/phantomjs yslow.js -u $USER_AGENT -vp -i grade --format junit fa7.edu.br/direito > $CIRCLE_TEST_REPORTS/junit/junit-direito.xml
+    - ./node_modules/phantomjs/bin/phantomjs yslow.js -c 2 -u $USER_AGENT -vp  -i grade --format junit fa7.edu.br > $CIRCLE_TEST_REPORTS/junit/junit-home.xml
+    - ./node_modules/phantomjs/bin/phantomjs yslow.js -c 2 -u $USER_AGENT -vp -i basic --format junit fa7.edu.br > $CIRCLE_TEST_REPORTS/junit/junit-basic.xml
+    - ./node_modules/phantomjs/bin/phantomjs yslow.js -c 2 -u $USER_AGENT -vp -i grade --format junit fa7.edu.br/graduacao > $CIRCLE_TEST_REPORTS/junit/junit-graduacao.xml
+    - ./node_modules/phantomjs/bin/phantomjs yslow.js -c 2 -u $USER_AGENT -vp -i grade --format junit fa7.edu.br/direito > $CIRCLE_TEST_REPORTS/junit/junit-direito.xml
