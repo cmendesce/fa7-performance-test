@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/cmendesce/travis-yslow/issues"
   },
-  "homepage": "https://github.com/cmendesce/travis-yslow#readme"
+  "homepage": "https://github.com/cmendesce/travis-yslow#readme",
+  "devDependencies": {
+    "phantomjs": "^2.1.7"
+  }
 }
