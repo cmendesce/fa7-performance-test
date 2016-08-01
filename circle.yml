@@ -2,4 +2,4 @@ test:
   pre:
     - mkdir -p $CIRCLE_TEST_REPORTS/junit/
   override:
-    - ./node_modules/phantomjs/bin/phantomjs yslow.js -i grade --format junit --threshold '{\"yexpires\": 60}' fa7.edu.br > $CIRCLE_TEST_REPORTS/junit/junit.xml
+    - ./node_modules/phantomjs/bin/phantomjs yslow.js -i grade --format junit fa7.edu.br > $CIRCLE_TEST_REPORTS/junit/junit.xml
