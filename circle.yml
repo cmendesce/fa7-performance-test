@@ -4,5 +4,4 @@ test:
     - export USER_AGENT="Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3"
     - export VIEW_PORT="[375x667]"
   override:
-    - phantomjs yslow.js -u $USER_AGENT -vp $VIEW_PORT -i grade --format junit fa7.edu.br fa7.edu.br/graduacao fa7.edu.br/direito > $CIRCLE_TEST_REPORTS/junit/yslow.xml
-    - sitespeed.io -u http://www.fa7.edu.br --junit --resultBaseDir $CIRCLE_TEST_REPORTS --outputFolderName sitespeedio --noYslow
+    - phantomjs yslow.js -u $USER_AGENT -vp $VIEW_PORT -i grade --format junit www.fa7.edu.br www.fa7.edu.br/graduacao www.fa7.edu.br/direito > $CIRCLE_TEST_REPORTS/junit/yslow.xml
