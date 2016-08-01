@@ -5,7 +5,7 @@ test:
     - export VIEW_PORT="[375x667]"
     - npm cache clean -f
     - npm install -g n
-    - n stable
+    - sudo n stable
   override:
     - phantomjs yslow.js -u $USER_AGENT -vp $VIEW_PORT -i grade --format junit fa7.edu.br fa7.edu.br/graduacao fa7.edu.br/direito > $CIRCLE_TEST_REPORTS/junit/yslow.xml
     - sitespeed.io -u fa7.edu.br --junit --resultBaseDir $CIRCLE_TEST_REPORTS --outputFolderName sitespeedio --noYslow
