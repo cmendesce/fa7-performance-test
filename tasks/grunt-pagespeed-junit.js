@@ -103,19 +103,20 @@ module.exports = function (grunt) {
             var val = ruleResults[key];
             var blocks = val.urlBlocks;
 
+            var name = 'GSPI: ' + b.title + ' ' + val.localizedRuleName;
             var tc = xml.ele('testcase', {
               assertions: 1,
-              classname: 'Google PageSpeed: ' + val.localizedRuleName,
-              name: 'Google PageSpeed: ' + val.localizedRuleName,
+              classname: name,
+              name: name,
               status: val.ruleImpact,
               time: ''
             });
 
             if (parseFloat(val.ruleImpact) > 0) {
               failures++;
-              grunt.log.writeln(JSON.stringify(val.summary));
+              //grunt.log.writeln();
               tc.ele('failure', {
-                message: 'Rule exceeds threshold.'
+                message: JSON.stringify(val.summary)
               });
             }
 
