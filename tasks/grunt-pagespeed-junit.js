@@ -12,7 +12,8 @@ module.exports = function (grunt) {
     var done = this.async();
     var options = this.options({
       //default: options
-      threshold: 60
+      //threshold: 60,
+      strategy: 'mobile'
     });
 
     var request = require('request'),
@@ -59,11 +60,12 @@ module.exports = function (grunt) {
     async.each(pages, function(page, callback) {
       options.url = page.url;
       var q = querystring.stringify(options),
-          u = 'https://www.googleapis.com/pagespeedonline/v1/runPagespeed?' + q,
+          u = 'https://www.googleapis.com/pagespeedonline/v2/runPagespeed?' + q,
           failures = 0;
 
       request(u, function (error, response, body) {
         grunt.log.writeln('Running PageSpeed Insights on ' + page.url + '.');
+        grunt.log.writeln('PageSpeed request path ' + u);
 
         if (!error && response.statusCode === 200) {
           var b = JSON.parse(body);
@@ -80,14 +82,14 @@ module.exports = function (grunt) {
             name: b.title,
             tests: Object.keys(ruleResults).length
           })
-          .ele('properties');
+          /*.ele('properties');
 
           [
             'kind',
             'id',
             'responseCode',
             'title',
-            'score'
+            'ruleGroups'
           ].forEach(function(element, index, array) {
             xml = xml.ele('property', {
               name: element,
@@ -95,7 +97,7 @@ module.exports = function (grunt) {
             }).up();
           });
 
-          xml = xml.up();
+          xml = xml.up();*/
 
           Object.keys(ruleResults).forEach(function(key, index) {
             var val = ruleResults[key];
@@ -109,14 +111,17 @@ module.exports = function (grunt) {
               time: ''
             });
 
-            if (typeof options.ruleThreshold !== 'undefined' && parseFloat(val.ruleImpact) > options.ruleThreshold) {
+            if (parseFloat(val.ruleImpact) > 0) {
               failures++;
+              grunt.log.writeln(val.summary);
               tc.ele('failure', {
                 message: 'Rule exceeds threshold.'
               });
             }
 
             var impact = 'Rule Impact: ' + val.ruleImpact + '\n';
+
+if (blocks !== undefined) {
 
             blocks.forEach(function(element) {
 
@@ -161,6 +166,8 @@ module.exports = function (grunt) {
               }
 
             });
+}
+
 
             tc.ele('system-out', {}, impact);
             xml = tc.up();

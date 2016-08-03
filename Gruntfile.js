@@ -10,6 +10,6 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.loadNpmTasks('grunt-pagespeed-junit');
+  grunt.loadTasks('tasks');
   grunt.registerTask('default', ['pagespeed_junit']);
 };
