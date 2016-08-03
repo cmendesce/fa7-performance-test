@@ -7,3 +7,4 @@ test:
     - phantomjs yslow.js -u $USER_AGENT -vp $VIEW_PORT -i grade --format junit www.fa7.edu.br > $CIRCLE_TEST_REPORTS/junit/yslow-home.xml
     - phantomjs yslow.js -u $USER_AGENT -vp $VIEW_PORT -i grade --format junit www.fa7.edu.br/direito > $CIRCLE_TEST_REPORTS/junit/yslow-direito.xml
     - phantomjs yslow.js -u $USER_AGENT -vp $VIEW_PORT -i grade --format junit www.fa7.edu.br/graduacao > $CIRCLE_TEST_REPORTS/junit/yslow-graduacao.xml
+    - grunt
