@@ -105,15 +105,15 @@ module.exports = function (grunt) {
 
             var tc = xml.ele('testcase', {
               assertions: 1,
-              classname: val.localizedRuleName,
-              name: val.localizedRuleName,
+              classname: 'Google PageSpeed: ' + val.localizedRuleName,
+              name: 'Google PageSpeed: ' + val.localizedRuleName,
               status: val.ruleImpact,
               time: ''
             });
 
             if (parseFloat(val.ruleImpact) > 0) {
               failures++;
-              grunt.log.writeln(val.summary);
+              grunt.log.writeln(JSON.stringify(val.summary));
               tc.ele('failure', {
                 message: 'Rule exceeds threshold.'
               });
