@@ -36,7 +36,7 @@ module.exports = function (grunt) {
       var q = querystring.stringify(params);
       var url = 'https://www.googleapis.com/pagespeedonline/v2/runPagespeed?' + q;
       var failures = 0;
-      
+
       request(url, function (error, response, body) {
         grunt.log.writeln('Running PageSpeed Insights on ' + page.url + '.');
 
@@ -76,12 +76,11 @@ module.exports = function (grunt) {
           Object.keys(ruleResults).forEach(function(key, index) {
             var val = ruleResults[key];
             var blocks = val.urlBlocks;
-
-            var name = '[GSPI]' + page.name + ' ' + val.localizedRuleName;
+            
             var tc = xml.ele('testcase', {
               assertions: 1,
-              classname: name,
-              name: name,
+              classname: '[PageSpeed] ' + page.name + ': ',
+              name: val.localizedRuleName,
               status: val.ruleImpact,
               time: ''
             });
