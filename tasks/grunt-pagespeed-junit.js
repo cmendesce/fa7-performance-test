@@ -11,67 +11,39 @@ module.exports = function (grunt) {
   grunt.registerTask('pagespeed_junit', 'Pagespeed to junit task runner for grunt.', function () {
     var done = this.async();
     var options = this.options({
-      //default: options
       //threshold: 60,
       strategy: 'mobile'
     });
 
-    var request = require('request'),
-        querystring = require('querystring'),
-        async = require('async'),
-        builder = require('xmlbuilder');
+    var request = require('request');
+    var querystring = require('querystring')
+    var async = require('async');
+    var builder = require('xmlbuilder');
 
-    var reports = options.reports || [];
-    var report = options.report || options.dest;
-    var url = options.url;
-    var urls = options.urls || [];
-
-    /**
-     * backwards compatibility
-     */
-    if (typeof url !== 'undefined' && urls.indexOf(url) === -1) {
-      urls.push(url);
-    }
-    if (typeof report !== 'undefined' && reports.indexOf(report) === -1) {
-      reports.push(report);
-    }
-
-    /**
-     * Delete options we're not going to use
-     */
-    delete options.urls;
-    delete options.reports;
-    delete options.dest;
-    delete options.report;
-
-    /**
-     * Lets copy yslow and turn urls/reports into an object
-     */
-    var pages = [];
-    for (var i = 0; i < urls.length; i++) {
-      if (reports.length >= i) {
-        pages.push({
-          url: urls[i],
-          report: reports[i]
-        });
-      }
+    var pages = options.pages;
+    for (var i = 0; i < options.pages.length; i++) {
+      pages[i].report = options.folder + pages[i].name + '.xml';
     }
 
     async.each(pages, function(page, callback) {
-      options.url = page.url;
-      var q = querystring.stringify(options),
-          u = 'https://www.googleapis.com/pagespeedonline/v2/runPagespeed?' + q,
-          failures = 0;
+      var params = {
+        url: page.url,
+        key: options.key,
+        strategy: options.strategy
+      };
+      var q = querystring.stringify(params);
+      var url = 'https://www.googleapis.com/pagespeedonline/v2/runPagespeed?' + q;
+      var failures = 0;
 
-      request(u, function (error, response, body) {
+      request(url, function (error, response, body) {
         grunt.log.writeln('Running PageSpeed Insights on ' + page.url + '.');
-        grunt.log.writeln('PageSpeed request path ' + u);
 
         if (!error && response.statusCode === 200) {
           var b = JSON.parse(body);
           var stats = b.pageStats;
           var results = b.formattedResults;
           var ruleResults = results.ruleResults;
+
           var xml = builder.create('testsuites', {
             failures: '%%FAILURES%%',
             name: b.title,
@@ -103,7 +75,7 @@ module.exports = function (grunt) {
             var val = ruleResults[key];
             var blocks = val.urlBlocks;
 
-            var name = 'GSPI: ' + b.title + ' ' + val.localizedRuleName;
+            var name = '[GSPI]' + page.name + ' ' + val.localizedRuleName;
             var tc = xml.ele('testcase', {
               assertions: 1,
               classname: name,
