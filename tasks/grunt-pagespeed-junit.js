@@ -11,7 +11,7 @@ module.exports = function (grunt) {
   grunt.registerTask('pagespeed_junit', 'Pagespeed to junit task runner for grunt.', function () {
     var done = this.async();
     var options = this.options({
-      //threshold: 60,
+      threshold: 60,
       strategy: 'mobile'
     });
 
@@ -22,10 +22,12 @@ module.exports = function (grunt) {
 
     var pages = options.pages;
     for (var i = 0; i < options.pages.length; i++) {
-      pages[i].report = options.folder + pages[i].name + '.xml';
+      pages[i].report = options.folder + 'gspi-' + pages[i].name.toLowerCase() + '.xml';
     }
 
-    async.each(pages, function(page, callback) {
+    async.each(pages, _eachAsync, done);
+
+    function _eachAsync(page, callback) {
       var params = {
         url: page.url,
         key: options.key,
@@ -34,7 +36,7 @@ module.exports = function (grunt) {
       var q = querystring.stringify(params);
       var url = 'https://www.googleapis.com/pagespeedonline/v2/runPagespeed?' + q;
       var failures = 0;
-
+      
       request(url, function (error, response, body) {
         grunt.log.writeln('Running PageSpeed Insights on ' + page.url + '.');
 
@@ -86,9 +88,8 @@ module.exports = function (grunt) {
 
             if (parseFloat(val.ruleImpact) > 0) {
               failures++;
-              //grunt.log.writeln();
               tc.ele('failure', {
-                message: JSON.stringify(val.summary)
+                message: val.summary.format
               });
             }
 
@@ -149,18 +150,17 @@ if (blocks !== undefined) {
 
           var output = xml.end({pretty: true}).replace(/%%FAILURES%%/g, failures.toString());
           grunt.file.write(page.report, output);
-          grunt.log.ok('File: ' + page.report + ' created.');
+          grunt.log.writeln('Page score: ' + b.score);
+          grunt.log.writeln('Total failures: ' + failures);
+          grunt.log.writeln('>> File: ' + page.report + ' created.');
 
-          if (parseInt(b.score) < options.threshold) {
-            grunt.fail.warn('Score of ' + b.score + ' is below defined threshold.');
-          }
         } else {
           grunt.fail.warn('Error retrieving results.');
         }
         callback();
       });
+    };
 
-    }, done);
 
   });
 };
