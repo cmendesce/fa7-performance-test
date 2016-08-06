@@ -50,45 +50,30 @@ module.exports = function (grunt) {
 
       var builder = require('xmlbuilder');
 
-      var junit = builder.create({
-        testsuites: {
+      var junit = builder.create('testsuites');
+
+      var suite = junit.ele({
+        'testsuite': {
           '@failures': '%%FAILURES%%',
-          '@name': page.name,
-          '@tests': keysResults.length
-        }});
+          '@name': '[PageSpeed] ' + page.name,
+          '@tests': keysResults.length,
+        }
+      });
 
-        var suite = junit.ele({
-          'testsuite': {
-            '@failures': '%%FAILURES%%',
-            '@name': '[PageSpeed] ' + page.name,
-            '@tests': keysResults.length,
-          }
-        });
-
-
-      var testCases = [];
       keysResults.forEach(function(key, index) {
         var rule = ruleResults[key];
         if (parseFloat(rule.ruleImpact) > 0) {
            failures++;
         }
-        //junit.
         suite.ele(parseRule(rule, page))
-        //testCases.push(parseRule(rule, page));
       });
 
-
-
-      //tc.ele('system-out', {}, impact);
       var output = junit.end({pretty: true}).replace(/%%FAILURES%%/g, failures.toString());
 
       grunt.file.write(page.report, output);
       grunt.log.writeln('Page score: ' + b.score);
       grunt.log.writeln('Total failures: ' + failures);
       grunt.log.writeln('>> File: ' + page.report + ' created.');
-      if (failures > 0) {
-        grunt.fail.fatal('n deu certo');
-      }
     } else {
       grunt.fail.warn('Error retrieving results.');
     }
@@ -97,14 +82,14 @@ module.exports = function (grunt) {
   // parsing
   function parseRule(rule, page) {
     var testCase = {
-      'testCase': {
+      'testcase': {
         '@name': rule.localizedRuleName,
         '@status': rule.ruleImpact
       }
     };
 
     if (parseFloat(rule.ruleImpact) > 0) {
-      testCase.testCase.failure = {
+      testCase.testcase.failure = {
         '@message': rule.summary.format
       };
     }
