@@ -49,27 +49,28 @@ module.exports = function (grunt) {
       var failures = 0;
 
       var builder = require('xmlbuilder');
-      var xml = builder.create('testsuites', {
+
+      var junit = builder.create('testsuites', {
         failures: '%%FAILURES%%',
         name: page.name,
-        tests: Object.keys(ruleResults).length
-      })
-      .ele('testsuite', {
-        failures: '%%FAILURES%%',
-        name: page.name,
-        tests: Object.keys(ruleResults).length
+        tests: Object.keys(ruleResults).length,
+        testsuite: {
+          failures: '%%FAILURES%%',
+          name: '[PageSpeed] ' + page.name,
+          tests: Object.keys(ruleResults).length
+        }
       });
-      xml = xml.up();
 
       Object.keys(ruleResults).forEach(function(key, index) {
         var rule = ruleResults[key];
         if (parseFloat(rule.ruleImpact) > 0) {
            failures++;
         }
-        xml = parseRule(rule, page, xml);
+        var testCase = parseRule(rule, page);
+        junit.ele( testCase);
       });
       //tc.ele('system-out', {}, impact);
-      var output = xml.end({pretty: true}).replace(/%%FAILURES%%/g, failures.toString());
+      var output = junit.end({pretty: true}).replace(/%%FAILURES%%/g, failures.toString());
       grunt.file.write(page.report, output);
       grunt.log.writeln('Page score: ' + b.score);
       grunt.log.writeln('Total failures: ' + failures);
@@ -81,19 +82,25 @@ module.exports = function (grunt) {
   }
 
   // parsing
-  function parseRule(rule, page, xml) {
+  function parseRule(rule, page) {
+    var testCase = {
+      testCase: {
+        name: rule.localizedRuleName,
+        status: rule.ruleImpact
+      }
+    };
 
-    var testCase = xml.ele('testcase', {
-      name: '[PageSpeed] ' + page.name + ' ' + rule.localizedRuleName,
+    /*var testCase = xml.ele('testcase', {
+      name: rule.localizedRuleName,
       status: rule.ruleImpact
-    });
+    });*/
     if (parseFloat(rule.ruleImpact) > 0) {
-      testCase.ele('failure', {
+      testCase.testCase.failure = {
         message: rule.summary.format
-      });
+      };
     }
 
-    return testCase.up();
+    return testCase;
   }
 
 };
