@@ -11,7 +11,6 @@ module.exports = function (grunt) {
 
     var async = require('async');
     var querystring = require('querystring');
-
     var pages = options.pages;
 
     for (var i = 0; i < pages.length; i++) {
@@ -47,30 +46,37 @@ module.exports = function (grunt) {
       var results = b.formattedResults;
       var ruleResults = results.ruleResults;
       var failures = 0;
+      var keysResults = Object.keys(ruleResults);
 
-      var builder = require('xmlbuilder');
-
-      var junit = builder.create('testsuites', {
-        failures: '%%FAILURES%%',
-        name: page.name,
-        tests: Object.keys(ruleResults).length,
-        testsuite: {
-          failures: '%%FAILURES%%',
-          name: '[PageSpeed] ' + page.name,
-          tests: Object.keys(ruleResults).length
-        }
-      });
-
-      Object.keys(ruleResults).forEach(function(key, index) {
+      var testCases = [];
+      keysResults.forEach(function(key, index) {
         var rule = ruleResults[key];
         if (parseFloat(rule.ruleImpact) > 0) {
            failures++;
         }
-        var testCase = parseRule(rule, page);
-        junit.ele( testCase);
+
+        testCases.push(parseRule(rule, page));
       });
+
+      var builder = require('xmlbuilder');
+
+      var junit = builder.create({
+        testsuites: {
+          '@failures': '%%FAILURES%%',
+          '@name': page.name,
+          '@tests': keysResults.length,
+          'testsuite': {
+            '@failures': '%%FAILURES%%',
+            '@name': '[PageSpeed] ' + page.name,
+            '@tests': keysResults.length,
+            testCases
+          }
+        }
+      });
+
       //tc.ele('system-out', {}, impact);
       var output = junit.end({pretty: true}).replace(/%%FAILURES%%/g, failures.toString());
+
       grunt.file.write(page.report, output);
       grunt.log.writeln('Page score: ' + b.score);
       grunt.log.writeln('Total failures: ' + failures);
@@ -84,19 +90,15 @@ module.exports = function (grunt) {
   // parsing
   function parseRule(rule, page) {
     var testCase = {
-      testCase: {
-        name: rule.localizedRuleName,
-        status: rule.ruleImpact
+      'testCase': {
+        '@name': rule.localizedRuleName,
+        '@status': rule.ruleImpact
       }
     };
 
-    /*var testCase = xml.ele('testcase', {
-      name: rule.localizedRuleName,
-      status: rule.ruleImpact
-    });*/
     if (parseFloat(rule.ruleImpact) > 0) {
       testCase.testCase.failure = {
-        message: rule.summary.format
+        '@message': rule.summary.format
       };
     }
 
