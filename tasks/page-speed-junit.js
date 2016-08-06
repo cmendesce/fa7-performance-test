@@ -53,12 +53,13 @@ module.exports = function (grunt) {
         failures: '%%FAILURES%%',
         name: page.name,
         tests: Object.keys(ruleResults).length
-      });
-      xml.ele('testsuite', {
+      })
+      .ele('testsuite', {
         failures: '%%FAILURES%%',
         name: page.name,
         tests: Object.keys(ruleResults).length
       });
+      xml = xml.up();
 
       Object.keys(ruleResults).forEach(function(key, index) {
         var rule = ruleResults[key];
@@ -83,14 +84,10 @@ module.exports = function (grunt) {
   function parseRule(rule, page, xml) {
 
     var testCase = xml.ele('testcase', {
-      assertions: 1,
-      classname: '[PageSpeed] ' + page.name,
-      name: rule.localizedRuleName,
-      status: rule.ruleImpact,
-      time: ''
+      name: '[PageSpeed] ' + page.name + ' ' + rule.localizedRuleName,
+      status: rule.ruleImpact
     });
     if (parseFloat(rule.ruleImpact) > 0) {
-
       testCase.ele('failure', {
         message: rule.summary.format
       });
