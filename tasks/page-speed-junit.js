@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function (grunt) {
-  const PAGESPEED_URL = 'https://www.googleapis.com/pagespeedonline/v2/runPagespeed';
+  var PAGESPEED_URL = 'https://www.googleapis.com/pagespeedonline/v2/runPagespeed';
 
   grunt.registerTask('pagespeed_junit_2', 'Pagespeed to junit task runner for grunt.', function() {
     var options = this.options({
@@ -47,7 +47,7 @@ module.exports = function (grunt) {
       var results = b.formattedResults;
       var ruleResults = results.ruleResults;
       var failures = 0;
-      
+
       var builder = require('xmlbuilder');
       var xml = builder.create('testsuites', {
         failures: '%%FAILURES%%',
