@@ -88,7 +88,7 @@ module.exports = function (grunt) {
       }
     };
 
-    if (parseFloat(rule.ruleImpact) > 0) {
+    if (parseFloat(rule.ruleImpact) > 0 && rule.summary !== undefined) {
       testCase.testcase.failure = {
         '@message': rule.summary.format
       };
