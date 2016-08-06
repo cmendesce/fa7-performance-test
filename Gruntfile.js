@@ -1,7 +1,7 @@
 module.exports = function(grunt) {
 
   grunt.initConfig({
-    pagespeed_junit: {
+    pagespeed_junit_2: {
       options: {
         folder: process.env.CIRCLE_TEST_REPORTS + '/junit/',
         pages: [
@@ -15,5 +15,5 @@ module.exports = function(grunt) {
   });
 
   grunt.loadTasks('tasks');
-  grunt.registerTask('default', ['pagespeed_junit']);
+  grunt.registerTask('default', ['pagespeed_junit_2']);
 };
