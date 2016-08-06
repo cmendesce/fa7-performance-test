@@ -48,31 +48,36 @@ module.exports = function (grunt) {
       var failures = 0;
       var keysResults = Object.keys(ruleResults);
 
-      var testCases = [];
-      keysResults.forEach(function(key, index) {
-        var rule = ruleResults[key];
-        if (parseFloat(rule.ruleImpact) > 0) {
-           failures++;
-        }
-
-        testCases.push(parseRule(rule, page));
-      });
-
       var builder = require('xmlbuilder');
 
       var junit = builder.create({
         testsuites: {
           '@failures': '%%FAILURES%%',
           '@name': page.name,
-          '@tests': keysResults.length,
+          '@tests': keysResults.length
+        }});
+
+        var suite = junit.ele({
           'testsuite': {
             '@failures': '%%FAILURES%%',
             '@name': '[PageSpeed] ' + page.name,
             '@tests': keysResults.length,
-            testCases
           }
+        });
+
+
+      var testCases = [];
+      keysResults.forEach(function(key, index) {
+        var rule = ruleResults[key];
+        if (parseFloat(rule.ruleImpact) > 0) {
+           failures++;
         }
+        //junit.
+        suite.ele(parseRule(rule, page))
+        //testCases.push(parseRule(rule, page));
       });
+
+
 
       //tc.ele('system-out', {}, impact);
       var output = junit.end({pretty: true}).replace(/%%FAILURES%%/g, failures.toString());
@@ -81,7 +86,9 @@ module.exports = function (grunt) {
       grunt.log.writeln('Page score: ' + b.score);
       grunt.log.writeln('Total failures: ' + failures);
       grunt.log.writeln('>> File: ' + page.report + ' created.');
-
+      if (failures > 0) {
+        grunt.fail.fatal('n deu certo');
+      }
     } else {
       grunt.fail.warn('Error retrieving results.');
     }
