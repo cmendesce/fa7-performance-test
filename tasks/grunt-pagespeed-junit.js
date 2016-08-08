@@ -8,6 +8,126 @@
 'use strict';
 
 module.exports = function (grunt) {
+
+  function parseResultSummary(summary) {
+    /*
+    "summary": {
+     "format": "The text on your page is legible. Learn more about {{BEGIN_LINK}}using legible font sizes{{END_LINK}}.",
+     "args": [
+      {
+       "type": "HYPERLINK",
+       "key": "LINK",
+       "value": "https://developers.google.com/speed/docs/insights/UseLegibleFontSizes"
+      }
+     ]
+    }
+    "urlBlocks": [
+     {
+      "header": {
+       "format": "{{BEGIN_LINK}}Leverage browser caching{{END_LINK}} for the following cacheable resources:",
+       "args": [
+        {
+         "type": "HYPERLINK",
+         "key": "LINK",
+         "value": "https://developers.google.com/speed/docs/insights/LeverageBrowserCaching"
+        }
+       ]
+      },
+      "header": {
+       "format": "{{BEGIN_LINK}}Enable compression{{END_LINK}} for the following resources to reduce their transfer size by {{SIZE_IN_BYTES}} ({{PERCENTAGE}} reduction).",
+       "args": [
+        {
+         "type": "HYPERLINK",
+         "key": "LINK",
+         "value": "https://developers.google.com/speed/docs/insights/EnableCompression"
+        },
+        {
+         "type": "BYTES",
+         "key": "SIZE_IN_BYTES",
+         "value": "7.8KiB"
+        },
+        {
+         "type": "PERCENTAGE",
+         "key": "PERCENTAGE",
+         "value": "62%"
+        }
+       ]
+     },
+      "urls": [
+       {
+        "result": {
+         "format": "{{URL}} ({{LIFETIME}})",
+         "args": [
+          {
+           "type": "URL",
+           "key": "URL",
+           "value": "https://developers.google.com/_static/images/breadcrumbs-right.png"
+          },
+          {
+           "type": "DURATION",
+           "key": "LIFETIME",
+           "value": "10 minutes"
+          }
+         ]
+       },
+       "result": {
+         "format": "Compressing {{URL}} could save {{SIZE_IN_BYTES}} ({{PERCENTAGE}} reduction).",
+         "args": [
+          {
+           "type": "URL",
+           "key": "URL",
+           "value": "https://developers.google.com/_static/images/developers-logo.svg"
+          },
+          {
+           "type": "BYTES",
+           "key": "SIZE_IN_BYTES",
+           "value": "7.8KiB"
+          },
+          {
+           "type": "PERCENTAGE",
+           "key": "PERCENTAGE",
+           "value": "62%"
+          }
+         ]
+        }
+       },
+       {
+        "result": {
+         "format": "{{URL}} ({{LIFETIME}})",
+         "args": [
+          {
+           "type": "URL",
+           "key": "URL",
+           "value": "https://developers.google.com/_static/images/developers-logo.svg"
+          },
+          {
+           "type": "DURATION",
+           "key": "LIFETIME",
+           "value": "10 minutes"
+          }
+         ]
+        }
+       },
+       {
+        "result": {
+         "format": "{{URL}} ({{LIFETIME}})",
+         "args": [
+          {
+           "type": "URL",
+           "key": "URL",
+           "value": "https://apis.google.com/js/platform.js"
+          },
+          {
+           "type": "DURATION",
+           "key": "LIFETIME",
+           "value": "30 minutes"
+          }
+         ]
+        }
+       },
+    */
+  }
+
   grunt.registerTask('pagespeed_junit', 'Pagespeed to junit task runner for grunt.', function () {
     var done = this.async();
     var options = this.options({
@@ -76,10 +196,10 @@ module.exports = function (grunt) {
           Object.keys(ruleResults).forEach(function(key, index) {
             var val = ruleResults[key];
             var blocks = val.urlBlocks;
-            
+
             var tc = xml.ele('testcase', {
               assertions: 1,
-              classname: '[PageSpeed] ' + page.name + ': ',
+              classname: '[PageSpeed] ' + page.name,
               name: val.localizedRuleName,
               status: val.ruleImpact,
               time: ''
