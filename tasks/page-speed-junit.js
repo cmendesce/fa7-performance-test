@@ -2,6 +2,7 @@
 
 module.exports = function (grunt) {
   var PAGESPEED_URL = 'https://www.googleapis.com/pagespeedonline/v2/runPagespeed';
+  var failureCount = 0;
 
   grunt.registerTask('pagespeed_junit_2', 'Pagespeed to junit task runner for grunt.', function() {
     var options = this.options({
@@ -25,11 +26,19 @@ module.exports = function (grunt) {
     }
 
     var done = this.async();
-    async.each(pages, eachPage, done);
+    async.each(pages, eachPage, function() {
+
+      if (failureCount > 0) {
+        grunt.fail.warn(failureCount + ' tests failed.', failureCount);
+      }
+    });
   });
 
-  function eachPage(page, callback) {
+  function addFailure() {
+    failureCount++;
+  }
 
+  function eachPage(page, callback) {
     var request = require('request');
 
     request(page.gpsiUrl, function(e, r, b) {
@@ -63,7 +72,8 @@ module.exports = function (grunt) {
       keysResults.forEach(function(key, index) {
         var rule = ruleResults[key];
         if (parseFloat(rule.ruleImpact) > 0) {
-           failures++;
+          addFailure();
+          failures++;
         }
         suite.ele(parseRule(rule, page))
       });
@@ -71,8 +81,6 @@ module.exports = function (grunt) {
       var output = junit.end({pretty: true}).replace(/%%FAILURES%%/g, failures.toString());
 
       grunt.file.write(page.report, output);
-      grunt.log.writeln('Page score: ' + b.score);
-      grunt.log.writeln('Total failures: ' + failures);
       grunt.log.writeln('>> File: ' + page.report + ' created.');
     } else {
       grunt.fail.warn('Error retrieving results.');
